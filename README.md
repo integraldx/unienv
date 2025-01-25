@@ -9,10 +9,8 @@ Unity3D를 cli 환경에서 실행하기 쉽게 만들기 위한 보조용 프�
 ### Cargo
 
 ```shell
-cargo install --git https://github.com/integraldx/unienv
+cargo install unienv
 ```
-
-현재 시점에서 crates.io를 통한 설치는 지원하지 않고 있습니다.
 
 ## How to use
 
