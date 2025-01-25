@@ -13,3 +13,12 @@ impl default::Default for UnienvConfig {
         Self { unity_hub_path: WINDOWS_UNITY_DEFAULT_BASE_PATH.to_string() }
     }
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub(crate) struct ProjectVersion {
+    #[serde(rename = "m_EditorVersion")]
+    pub editor_version: String,
+
+    #[serde(rename = "m_EditorVersionWithRevision")]
+    pub editor_version_with_revision: String,
+}
