@@ -402,7 +402,7 @@ checksum = "11cd88e12b17c6494200a9c1b683a04fcac9573ed74cd1b62aeb2727c5592243"
 
 [[package]]
 name = "unienv"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "clap",
  "confy",
