@@ -1,0 +1,72 @@
+name: "Publish"
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - '^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$' # RegEx for semver
+
+jobs:
+  build-win-amd64:
+    name: win build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - run: cargo build -r
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-win-amd64
+          path: target/release
+
+  build-linux-amd64:
+    name: linux build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - run: cargo build -r
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-linux-amd64
+          path: target/release
+
+  build-mac-arm64:
+    name: mac build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - run: cargo build -r
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-mac-arm64
+          path: target/release
+
+  cratesio:
+    name: "Publish on crates.io"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - run: cargo login ${{secrets.CRATES_IO_TOKEN}}
+      - run: cargo publish
+
+  github-releases:
+    name: "Add release on github"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+      - run: tar -czf build-win-amd64.tar.gz build-win-amd64
+      - run: tar -czf build-linux-amd64.tar.gz build-linux-amd64
+      - run: tar -czf build-mac-arm64.tar.gz build-mac-arm64
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            LICENSE
+            build-win-amd64.tar.gz
+            build-linux-amd64.tar.gz
+            build-mac-arm64.tar.gz
