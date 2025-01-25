@@ -57,11 +57,16 @@ jobs:
   github-releases:
     name: "Add release on github"
     runs-on: ubuntu-latest
+    needs:
+      - build-win-amd64
+      - build-linux-amd64
+      - build-mac-arm64
     steps:
-      - uses: actions/download-artifact@v4
-      - run: tar -czf build-win-amd64.tar.gz build-win-amd64
-      - run: tar -czf build-linux-amd64.tar.gz build-linux-amd64
-      - run: tar -czf build-mac-arm64.tar.gz build-mac-arm64
+      - id: dl-artifacts
+        uses: actions/download-artifact@v4
+      - run: tar -czf build-win-amd64.tar.gz ${{steps.dl-artifacts.outputs.download-path}}/build-win-amd64
+      - run: tar -czf build-linux-amd64.tar.gz ${{steps.dl-artifacts.outputs.download-path}}/build-linux-amd64
+      - run: tar -czf build-mac-arm64.tar.gz ${{steps.dl-artifacts.outputs.download-path}}/build-mac-arm64
       - uses: softprops/action-gh-release@v2
         with:
           files: |
