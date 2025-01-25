@@ -5,3 +5,5 @@ edition = "2021"
 
 [dependencies]
 clap = "4.5.20"
+confy = "0.6.1"
+serde = { version = "1.0.217", features = ["derive"] }
