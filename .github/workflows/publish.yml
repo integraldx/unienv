@@ -64,9 +64,9 @@ jobs:
     steps:
       - id: dl-artifacts
         uses: actions/download-artifact@v4
-      - run: tar -czf build-win-amd64.tar.gz ${{steps.dl-artifacts.outputs.download-path}}/build-win-amd64
-      - run: tar -czf build-linux-amd64.tar.gz ${{steps.dl-artifacts.outputs.download-path}}/build-linux-amd64
-      - run: tar -czf build-mac-arm64.tar.gz ${{steps.dl-artifacts.outputs.download-path}}/build-mac-arm64
+      - run: tar -czf build-win-amd64.tar.gz -C ${{steps.dl-artifacts.outputs.download-path}} build-win-amd64/*
+      - run: tar -czf build-linux-amd64.tar.gz -C ${{steps.dl-artifacts.outputs.download-path}} build-linux-amd64/*
+      - run: tar -czf build-mac-arm64.tar.gz -C ${{steps.dl-artifacts.outputs.download-path}} build-mac-arm64/*
       - uses: softprops/action-gh-release@v2
         with:
           files: |
