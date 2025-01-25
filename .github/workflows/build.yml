@@ -3,7 +3,7 @@ on: push
 
 jobs:
   build-win-amd64:
-    name: cargo build
+    name: windows build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +15,7 @@ jobs:
           path: target/release
 
   build-linux-amd64:
-    name: cargo build
+    name: linux build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

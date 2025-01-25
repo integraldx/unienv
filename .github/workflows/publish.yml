@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-win-amd64:
-    name: win build
+    name: windows build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
