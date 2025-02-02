@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unpublished]
+
+### Added
+
+- subcommand structure
+- unity hub execution
+- argument parsing matched with editor
+
 ## [0.1.2]
 
 ### Fixed

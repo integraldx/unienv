@@ -1,17 +1,19 @@
 use serde::{Deserialize, Serialize};
 use std::default;
 
-use crate::constvals::WINDOWS_UNITY_DEFAULT_BASE_PATH;
+use crate::constvals::{WINDOWS_UNITY_DEFAULT_BASE_PATH, WINDOWS_UNITY_HUB_DEFAULT_PATH};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct UnienvConfig {
     pub unity_hub_path: String,
+    pub unity_installation_base_path: String,
 }
 
 impl default::Default for UnienvConfig {
     fn default() -> Self {
         Self {
-            unity_hub_path: WINDOWS_UNITY_DEFAULT_BASE_PATH.to_string(),
+            unity_hub_path: WINDOWS_UNITY_HUB_DEFAULT_PATH.to_string(),
+            unity_installation_base_path: WINDOWS_UNITY_DEFAULT_BASE_PATH.to_string(),
         }
     }
 }
