@@ -107,7 +107,6 @@ fn main() -> Result<(), std::io::Error> {
 
         let process = unity_command.spawn().unwrap();
         process.wait_with_output()
-
     } else if matches.subcommand_name().unwrap() == "hub" {
         let matches = matches.subcommand_matches("hub").unwrap();
         let passargs: VecDeque<String> = matches
@@ -138,9 +137,12 @@ fn main() -> Result<(), std::io::Error> {
             if output.status.success() {
                 Ok(())
             } else {
-                Err(Error::new(ErrorKind::Other, "Process returned non-zero value."))
+                Err(Error::new(
+                    ErrorKind::Other,
+                    "Process returned non-zero value.",
+                ))
             }
-        },
+        }
         Err(e) => Err(e),
     };
 }
