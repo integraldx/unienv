@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::default;
+use std::{default, str::FromStr};
 
 use crate::constvals::{WINDOWS_UNITY_DEFAULT_BASE_PATH, WINDOWS_UNITY_HUB_DEFAULT_PATH};
 
@@ -7,6 +7,8 @@ use crate::constvals::{WINDOWS_UNITY_DEFAULT_BASE_PATH, WINDOWS_UNITY_HUB_DEFAUL
 pub(crate) struct UnienvConfig {
     pub unity_hub_path: String,
     pub unity_installation_base_path: String,
+    pub default_editor_options: Vec<String>,
+    pub default_hub_options: Vec<String>
 }
 
 impl default::Default for UnienvConfig {
@@ -14,6 +16,8 @@ impl default::Default for UnienvConfig {
         Self {
             unity_hub_path: WINDOWS_UNITY_HUB_DEFAULT_PATH.to_string(),
             unity_installation_base_path: WINDOWS_UNITY_DEFAULT_BASE_PATH.to_string(),
+            default_editor_options: ["-batchmode", "-quit"].map(|s| String::from_str(s).unwrap()).to_vec(),
+            default_hub_options: ["--", "-headless"].map(|s| String::from_str(s).unwrap()).to_vec(),
         }
     }
 }

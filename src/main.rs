@@ -98,6 +98,7 @@ fn main() -> Result<(), std::io::Error> {
             .join(WINDOWS_UNITY_EXECUTABLE_PATH);
 
         let mut unity_command = Command::new(executable_path);
+        unity_command.args(config.default_editor_options);
         unity_command.arg("-projectPath").arg(project_path);
         unity_command.args(passargs);
 
@@ -118,8 +119,7 @@ fn main() -> Result<(), std::io::Error> {
         let executable_path = Path::new(&config.unity_hub_path);
 
         let mut unity_hub_command = Command::new(executable_path);
-        unity_hub_command.arg("--");
-        unity_hub_command.arg("--headless");
+        unity_hub_command.args(config.default_hub_options);
         unity_hub_command.args(passargs);
 
         unity_hub_command.stdout(Stdio::inherit());

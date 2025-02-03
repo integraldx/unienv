@@ -4,6 +4,7 @@
 
 ### Added
 
+- default options for editor and hub in config
 - subcommand structure
 - unity hub execution
 - argument parsing matched with editor
