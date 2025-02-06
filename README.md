@@ -17,9 +17,17 @@ cargo install unienv
 ### 유니티 에디터 실행
 
 ```shell
-unienv --projectPath <Project Path> ...
+unienv editor -projectPath <Project Path> ...
+```
+
+### 유니티 허브 실행
+
+```shell
+unienv hub ...
 ```
 
 ### Config
 
 Unity 에디터나, Unity Hub의 설치 경로가 각 운영체제 기본과 다를 경우, 설정을 통해 정상적으로 작동하도록 수정할 수 있습니다.
+
+또한, Unity Accelerator 등 추가적으로 적용할 옵션이 있는 경우 커맨드에 추가할 수 있습니다.
