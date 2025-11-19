@@ -8,7 +8,14 @@ mod unity_launcher;
 mod unity_parser;
 
 fn build_command() -> clap::Command {
-    let editor_command = command!().name("editor").arg(
+    let test_command = command!().name("test").arg(
+        Arg::new("passargs")
+            .allow_hyphen_values(true)
+            .num_args(0..)
+            .trailing_var_arg(true),
+    );
+
+    let build_command = command!().name("build").arg(
         Arg::new("passargs")
             .allow_hyphen_values(true)
             .num_args(0..)
@@ -22,8 +29,17 @@ fn build_command() -> clap::Command {
             .trailing_var_arg(true),
     );
 
+    let editor_command = command!().name("editor").arg(
+        Arg::new("passargs")
+            .allow_hyphen_values(true)
+            .num_args(0..)
+            .trailing_var_arg(true),
+    );
+
     command!()
         .subcommand_required(true)
+        .subcommand(test_command)
+        .subcommand(build_command)
         .subcommand(editor_command)
         .subcommand(hub_command)
 }
