@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::{default, str::FromStr};
 
-use crate::constvals::{WINDOWS_UNITY_DEFAULT_BASE_PATH, WINDOWS_UNITY_HUB_DEFAULT_PATH};
+use crate::constants::{WINDOWS_UNITY_DEFAULT_BASE_PATH, WINDOWS_UNITY_HUB_DEFAULT_PATH};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct UnienvConfig {

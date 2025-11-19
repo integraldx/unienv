@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::{config::ProjectVersion, constvals::PROJECT_VERSION_PATH};
+use crate::{config::ProjectVersion, constants::PROJECT_VERSION_PATH};
 
 pub(crate) fn get_project_version_string(project_path: &PathBuf) -> Result<String, std::io::Error> {
     let version_file_str = read_to_string(project_path.join(PROJECT_VERSION_PATH))?;
