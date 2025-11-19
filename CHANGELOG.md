@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- `test` command using "Build Profile" feature
+- `build` command using "Build Profile" feature
+
 ## [0.2.1]
 
 ### Fixed
