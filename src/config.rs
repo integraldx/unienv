@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::{default, str::FromStr};
+use std::str::FromStr;
 
 use crate::constants::{WINDOWS_UNITY_DEFAULT_BASE_PATH, WINDOWS_UNITY_HUB_DEFAULT_PATH};
 
@@ -11,7 +11,7 @@ pub(crate) struct UnienvConfig {
     pub default_hub_options: Vec<String>,
 }
 
-impl default::Default for UnienvConfig {
+impl Default for UnienvConfig {
     fn default() -> Self {
         Self {
             unity_hub_path: WINDOWS_UNITY_HUB_DEFAULT_PATH.to_string(),
