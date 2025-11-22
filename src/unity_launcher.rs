@@ -80,6 +80,46 @@ pub fn launch_unity(
         args.append(&mut passargs);
 
         launch_unity_hub(&executable_path.to_path_buf(), args.into_iter().collect())
+    } else if matches.subcommand_name().unwrap() == "build" {
+        let matches = matches.subcommand_matches("build").unwrap();
+
+        let build_profile = matches.get_one::<String>("buildProfile").unwrap();
+        let output_path = matches.get_one::<String>("output").unwrap();
+        let log_path = matches.get_one::<String>("logPath").unwrap();
+        let current_dir_str = String::from_str(current_dir().unwrap().to_str().unwrap()).unwrap();
+        let project_path = matches
+            .get_one::<String>("projectPath")
+            .unwrap_or(&current_dir_str);
+
+        let Ok(project_version) =
+            get_project_version_string(&PathBuf::from_str(project_path.as_str()).unwrap())
+        else {
+            eprintln!("Failed to read project version from directory. Please check if target directory is valid unity project.");
+            return Err(Err(Error::new(
+                ErrorKind::Other,
+                "Failed to read project version from directory.",
+            )));
+        };
+
+        let executable_path = Path::new(&config.unity_installation_base_path)
+            .join(&project_version)
+            .join(WINDOWS_UNITY_EXECUTABLE_PATH);
+
+        let mut args = config.default_editor_options.clone();
+
+        args.push(String::from_str("-projectPath").unwrap());
+        args.push(project_path.clone());
+
+        args.push(String::from("-logFile"));
+        args.push(log_path.clone());
+
+        args.push(String::from("-activeBuildProfile"));
+        args.push(build_profile.clone());
+
+        args.push(String::from("-build"));
+        args.push(output_path.clone());
+
+        launch_unity_editor(&executable_path.to_path_buf(), args.into_iter().collect())
     } else {
         // Unexpected due to command requiring subcommand
         panic!("Subcommand unprovided");
