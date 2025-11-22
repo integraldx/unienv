@@ -16,7 +16,9 @@ pub fn launch_unity(
     let result = if matches.subcommand_name().unwrap() == "editor" {
         let matches = matches.subcommand_matches("editor").unwrap();
 
-        let mut passargs: VecDeque<String> = matches
+        let mut args = config.default_editor_options.clone();
+
+        let mut passargs: Vec<String> = matches
             .get_many::<String>("passargs")
             .unwrap_or_default()
             .map(|sref| String::from(sref))
@@ -33,12 +35,14 @@ pub fn launch_unity(
                 println!("No project path provided, assuming PWD.");
 
                 let pwd = current_dir().unwrap();
-                passargs.push_front(String::from_str(pwd.to_str().unwrap()).unwrap());
-                passargs.push_front(String::from_str("-projectPath").unwrap());
+                args.push(String::from_str("-projectPath").unwrap());
+                args.push(String::from_str(pwd.to_str().unwrap()).unwrap());
 
                 pwd
             }
         };
+
+        args.append(&mut passargs);
 
         println!("{}", project_path.to_str().unwrap());
 
@@ -61,19 +65,11 @@ pub fn launch_unity(
             .join(&project_version)
             .join(WINDOWS_UNITY_EXECUTABLE_PATH);
 
-        let mut unity_command = Command::new(executable_path);
-        unity_command.args(config.default_editor_options.clone());
-        unity_command.arg("-projectPath").arg(project_path);
-        unity_command.args(passargs);
 
-        unity_command.stdout(Stdio::inherit());
-        unity_command.stderr(Stdio::inherit());
-
-        let process = unity_command.spawn().unwrap();
-        process.wait_with_output()
+        launch_unity_editor(&executable_path, args.into_iter().collect())
     } else if matches.subcommand_name().unwrap() == "hub" {
         let matches = matches.subcommand_matches("hub").unwrap();
-        let passargs: VecDeque<String> = matches
+        let mut passargs: Vec<String> = matches
             .get_many::<String>("passargs")
             .unwrap_or_default()
             .map(|sref| String::from(sref))
@@ -81,19 +77,41 @@ pub fn launch_unity(
 
         let executable_path = Path::new(&config.unity_hub_path);
 
-        let mut unity_hub_command = Command::new(executable_path);
-        unity_hub_command.args(config.default_hub_options.clone());
-        unity_hub_command.args(passargs);
+        let mut args = config.default_hub_options.clone();
+        args.append(&mut passargs);
 
-        unity_hub_command.stdout(Stdio::inherit());
-        unity_hub_command.stderr(Stdio::inherit());
-
-        let process = unity_hub_command.spawn().unwrap();
-
-        process.wait_with_output()
+        launch_unity_hub(&executable_path.to_path_buf(), args.into_iter().collect())
     } else {
         // Unexpected due to command requiring subcommand
         panic!("Subcommand unprovided");
     };
     Ok(result)
+}
+
+fn launch_unity_editor(unity_editor_path: &PathBuf, args: VecDeque<String>) -> Result<Output, Error> {
+    let mut unity_command = Command::new(unity_editor_path);
+    unity_command.args(args);
+    unity_command.stdout(Stdio::inherit());
+    unity_command.stderr(Stdio::inherit());
+
+    let Ok(process) = unity_command.spawn() else {
+        println!("Failed to launch unity editor.");
+        return Err(Error::new(ErrorKind::Other, "Failed to launch unity editor."));
+    };
+
+    process.wait_with_output()
+}
+
+fn launch_unity_hub(unity_hub_path: &PathBuf, args: VecDeque<String>) -> Result<Output, Error> {
+    let mut unity_hub_command = Command::new(unity_hub_path);
+    unity_hub_command.args(args);
+    unity_hub_command.stdout(Stdio::inherit());
+    unity_hub_command.stderr(Stdio::inherit());
+
+    let Ok(process) = unity_hub_command.spawn() else {
+        println!("Failed to launch unity hub.");
+        return Err(Error::new(ErrorKind::Other, "Failed to launch unity hub."));
+    };
+
+    process.wait_with_output()
 }
