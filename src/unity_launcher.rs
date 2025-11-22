@@ -65,7 +65,6 @@ pub fn launch_unity(
             .join(&project_version)
             .join(WINDOWS_UNITY_EXECUTABLE_PATH);
 
-
         launch_unity_editor(&executable_path, args.into_iter().collect())
     } else if matches.subcommand_name().unwrap() == "hub" {
         let matches = matches.subcommand_matches("hub").unwrap();
@@ -88,7 +87,10 @@ pub fn launch_unity(
     Ok(result)
 }
 
-fn launch_unity_editor(unity_editor_path: &PathBuf, args: VecDeque<String>) -> Result<Output, Error> {
+fn launch_unity_editor(
+    unity_editor_path: &PathBuf,
+    args: VecDeque<String>,
+) -> Result<Output, Error> {
     let mut unity_command = Command::new(unity_editor_path);
     unity_command.args(args);
     unity_command.stdout(Stdio::inherit());
@@ -96,7 +98,10 @@ fn launch_unity_editor(unity_editor_path: &PathBuf, args: VecDeque<String>) -> R
 
     let Ok(process) = unity_command.spawn() else {
         println!("Failed to launch unity editor.");
-        return Err(Error::new(ErrorKind::Other, "Failed to launch unity editor."));
+        return Err(Error::new(
+            ErrorKind::Other,
+            "Failed to launch unity editor.",
+        ));
     };
 
     process.wait_with_output()
