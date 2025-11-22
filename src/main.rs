@@ -15,12 +15,26 @@ fn build_command() -> clap::Command {
             .trailing_var_arg(true),
     );
 
-    let build_command = command!().name("build").arg(
-        Arg::new("passargs")
-            .allow_hyphen_values(true)
-            .num_args(0..)
-            .trailing_var_arg(true),
-    );
+    let build_command = command!().name("build")
+        .arg(Arg::new("logPath")
+            .required(false)
+            .short('l')
+            .long("logPath")
+            .help("log file path")
+            .default_value("./unity.log")
+        )
+        .arg(Arg::new("buildProfile")
+            .required(true)
+            .short('p')
+            .long("buildProfile")
+            .help("Build profile to use")
+        )
+        .arg(Arg::new("output")
+            .required(true)
+            .short('o')
+            .long("output")
+            .help("Target output directory or executable.\nRefer to unity documentation for more information.")
+        );
 
     let hub_command = command!().name("hub").arg(
         Arg::new("passargs")
