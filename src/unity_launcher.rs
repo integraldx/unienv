@@ -105,6 +105,12 @@ pub fn launch_unity(
             .join(&project_version)
             .join(WINDOWS_UNITY_EXECUTABLE_PATH);
 
+        let build_profile_path = Path::new("Assets/Settings/Build Profiles").join(build_profile.clone() + ".asset");
+
+        if !PathBuf::from_str(&project_path).unwrap().join(&build_profile_path).exists() {
+            return Err(Err(Error::new(ErrorKind::Other, "Build profile not found.")));
+        }
+
         let mut args = config.default_editor_options.clone();
 
         args.push(String::from_str("-projectPath").unwrap());
@@ -114,7 +120,7 @@ pub fn launch_unity(
         args.push(log_path.clone());
 
         args.push(String::from("-activeBuildProfile"));
-        args.push(build_profile.clone());
+        args.push(build_profile_path.to_str().unwrap().to_string());
 
         args.push(String::from("-build"));
         args.push(output_path.clone());
