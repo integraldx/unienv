@@ -1,10 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [0.3.0]
 
 ### Added
 
-- `test` command using "Build Profile" feature
 - `build` command using "Build Profile" feature
 
 ## [0.2.1]

@@ -8,12 +8,12 @@ mod unity_launcher;
 mod unity_parser;
 
 fn build_command() -> clap::Command {
-    let test_command = command!().name("test").arg(
-        Arg::new("passargs")
-            .allow_hyphen_values(true)
-            .num_args(0..)
-            .trailing_var_arg(true),
-    );
+    // let test_command = command!().name("test").arg(
+    //     Arg::new("passargs")
+    //         .allow_hyphen_values(true)
+    //         .num_args(0..)
+    //         .trailing_var_arg(true),
+    // );
 
     let build_command = command!().name("build")
         .arg(Arg::new("logPath")
@@ -58,7 +58,7 @@ fn build_command() -> clap::Command {
 
     command!()
         .subcommand_required(true)
-        .subcommand(test_command)
+        // .subcommand(test_command)
         .subcommand(build_command)
         .subcommand(editor_command)
         .subcommand(hub_command)

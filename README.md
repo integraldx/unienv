@@ -2,7 +2,7 @@
 
 Unity3D를 cli 환경에서 실행하기 쉽게 만들기 위한 보조용 프로그램입니다.
 
-- Unity 에디터 버전을 프로젝트로부터 자동으로 감지하고, 맞는 버전을 실행합니다.
+- Unity 에디터 버전을 프로젝트 경로로부터 자동으로 감지하고, 알맞는 버전을 실행합니다.
 
 ## How to install
 
@@ -13,6 +13,12 @@ cargo install unienv
 ```
 
 ## How to use
+
+### 빌드 생성
+
+```shell
+unienv build -b <Build Profile> -o <Output Path>
+```
 
 ### 유니티 에디터 실행
 
