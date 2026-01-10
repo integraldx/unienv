@@ -4,7 +4,7 @@ use crate::unity_parser::get_project_version_string;
 use clap::ArgMatches;
 use std::collections::VecDeque;
 use std::env::current_dir;
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output, Stdio};
 use std::str::FromStr;
@@ -21,14 +21,12 @@ pub fn launch_unity(
         let mut passargs: Vec<String> = matches
             .get_many::<String>("passargs")
             .unwrap_or_default()
-            .map(|sref| String::from(sref))
+            .map(String::from)
             .collect();
 
         let project_path = match passargs
             .iter()
-            .skip_while(|&arg| arg.as_str() != "-projectPath")
-            .skip(1)
-            .next()
+            .skip_while(|&arg| arg.as_str() != "-projectPath").nth(1)
         {
             Some(path_ref) => PathBuf::from_str(path_ref).unwrap(),
             None => {
@@ -48,15 +46,13 @@ pub fn launch_unity(
 
         let Ok(project_version) = get_project_version_string(&project_path) else {
             eprintln!("Failed to read project version from directory. Please check if target directory is valid unity project.");
-            return Err(Err(Error::new(
-                ErrorKind::Other,
+            return Err(Err(Error::other(
                 "Failed to read project version from directory.",
             )));
         };
 
-        let Ok(_) = confy::store("unienv", None, &config) else {
-            return Err(Err(Error::new(
-                ErrorKind::Other,
+        let Ok(_) = confy::store("unienv", None, config) else {
+            return Err(Err(Error::other(
                 "Failed to store unienv config.",
             )));
         };
@@ -71,7 +67,7 @@ pub fn launch_unity(
         let mut passargs: Vec<String> = matches
             .get_many::<String>("passargs")
             .unwrap_or_default()
-            .map(|sref| String::from(sref))
+            .map(String::from)
             .collect();
 
         let executable_path = Path::new(&config.unity_hub_path);
@@ -95,8 +91,7 @@ pub fn launch_unity(
             get_project_version_string(&PathBuf::from_str(project_path.as_str()).unwrap())
         else {
             eprintln!("Failed to read project version from directory. Please check if target directory is valid unity project.");
-            return Err(Err(Error::new(
-                ErrorKind::Other,
+            return Err(Err(Error::other(
                 "Failed to read project version from directory.",
             )));
         };
@@ -108,13 +103,12 @@ pub fn launch_unity(
         let build_profile_path =
             Path::new("Assets/Settings/Build Profiles").join(build_profile.clone() + ".asset");
 
-        if !PathBuf::from_str(&project_path)
+        if !PathBuf::from_str(project_path)
             .unwrap()
             .join(&build_profile_path)
             .exists()
         {
-            return Err(Err(Error::new(
-                ErrorKind::Other,
+            return Err(Err(Error::other(
                 "Build profile not found.",
             )));
         }
@@ -152,8 +146,7 @@ fn launch_unity_editor(
 
     let Ok(process) = unity_command.spawn() else {
         println!("Failed to launch unity editor.");
-        return Err(Error::new(
-            ErrorKind::Other,
+        return Err(Error::other(
             "Failed to launch unity editor.",
         ));
     };
@@ -169,7 +162,7 @@ fn launch_unity_hub(unity_hub_path: &PathBuf, args: VecDeque<String>) -> Result<
 
     let Ok(process) = unity_hub_command.spawn() else {
         println!("Failed to launch unity hub.");
-        return Err(Error::new(ErrorKind::Other, "Failed to launch unity hub."));
+        return Err(Error::other("Failed to launch unity hub."));
     };
 
     process.wait_with_output()

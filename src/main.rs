@@ -1,19 +1,36 @@
 use clap::{self, command, Arg};
 use config::UnienvConfig;
-use confy;
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 mod config;
 mod constants;
 mod unity_launcher;
 mod unity_parser;
 
 fn build_command() -> clap::Command {
-    // let test_command = command!().name("test").arg(
-    //     Arg::new("passargs")
-    //         .allow_hyphen_values(true)
-    //         .num_args(0..)
-    //         .trailing_var_arg(true),
-    // );
+    let test_command = command!().name("test")
+        .arg(Arg::new("buildProfile")
+            .required(true)
+            .short('b')
+            .long("buildProfile")
+            .help("Build profile to use")
+        )
+        .arg(Arg::new("testPlatform")
+            .required(true)
+            .short('p')
+            .long("testPlatform")
+            .help("Test platform to target")
+        )
+        .arg(Arg::new("output")
+            .required(true)
+            .short('o')
+            .long("output")
+            .help("Path to output test result")
+        )
+        .arg(Arg::new("passargs")
+            .allow_hyphen_values(true)
+            .num_args(0..)
+            .trailing_var_arg(true),
+        );
 
     let build_command = command!().name("build")
         .arg(Arg::new("logPath")
@@ -58,7 +75,7 @@ fn build_command() -> clap::Command {
 
     command!()
         .subcommand_required(true)
-        // .subcommand(test_command)
+        .subcommand(test_command)
         .subcommand(build_command)
         .subcommand(editor_command)
         .subcommand(hub_command)
@@ -70,8 +87,7 @@ fn main() -> Result<(), Error> {
     let matches = command.get_matches();
 
     let Ok(config): Result<UnienvConfig, confy::ConfyError> = confy::load("unienv", None) else {
-        return Err(Error::new(
-            ErrorKind::Other,
+        return Err(Error::other(
             "Failed to load unienv config.",
         ));
     };
@@ -86,8 +102,7 @@ fn main() -> Result<(), Error> {
             if output.status.success() {
                 Ok(())
             } else {
-                Err(Error::new(
-                    ErrorKind::Other,
+                Err(Error::other(
                     "Process returned non-zero value.",
                 ))
             }
